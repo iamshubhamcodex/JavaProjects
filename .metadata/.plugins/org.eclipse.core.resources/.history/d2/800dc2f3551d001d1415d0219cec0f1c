@@ -1,0 +1,11 @@
+package snakeGame;
+
+public class Start {
+
+	public static void main(String[] args) {
+		@SuppressWarnings("unused")
+		Game g = new Game();
+
+	}
+
+}

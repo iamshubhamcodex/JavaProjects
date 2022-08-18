@@ -1,0 +1,41 @@
+package flappyBird;
+
+public class Game {
+	static public static boolean play = true;
+	static int score = 0;
+	static int call = 0;
+
+	public static void startThread() {
+		Thread t = new Thread() {
+			public void run() {
+				try {
+					while (play) {
+						if ((Graphic.yD > Graphic.pn.getHeight() && Graphic.yD >= 50) || yD < 0)
+							play = false;
+
+						setYD(yD += Gravity.getDist());
+						boolean toRemove = false;
+						for (int[] li : Pole.poles) {
+							if ((li[1] <= ballx + ballw) && (yD <= li[0] || yD + 25 >= li[0] + 150)) // 51(x) +
+																										// 25(width) 76
+								play = false;
+							li[1] -= 2;
+							if (li[1] < 0) {
+								toRemove = true;
+								score++;
+							}
+						}
+						if (toRemove)
+							Pole.poles.remove(0);
+						pn.repaint();
+						Thread.sleep(33);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		t.start();
+	}
+
+}

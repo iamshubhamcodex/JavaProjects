@@ -1,0 +1,14 @@
+package flappyBird;
+
+public class Ball {
+
+	int ballx = 51;
+	int ballw = 25;
+	float yD = 10;
+
+	public void setYD(float f) {
+		yD = f;
+
+	}
+
+}

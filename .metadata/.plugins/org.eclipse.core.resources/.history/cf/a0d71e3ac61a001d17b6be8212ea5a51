@@ -1,0 +1,30 @@
+package trying;
+
+import java.awt.*;
+import javax.swing.*;
+
+public class Test {
+	public static void main(String[] args) {
+		JFrame frame = new JFrame("Graphics");
+		frame.setBounds(1250, 100, 528, 551);
+
+		@SuppressWarnings("serial")
+		JPanel pn = new JPanel() {
+			@Override
+			public void paint(Graphics g) {
+				g.setFont(new Font("Courier New", Font.BOLD, 20));
+				g.setColor(Color.blue);
+				g.drawString("Illustration of methods of Graphics class", 200, 520);
+				Font f = g.getFont();
+				String s = f.toString();
+				g.drawString(s, 5, 560);
+				
+				g.fillRect(500, 15, 70, 90);
+
+			}
+		};
+		frame.getContentPane().add(pn);
+		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+}

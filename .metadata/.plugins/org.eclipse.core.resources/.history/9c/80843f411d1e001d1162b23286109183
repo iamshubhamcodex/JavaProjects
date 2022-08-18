@@ -1,0 +1,26 @@
+package com.gravity;
+
+import java.util.Date;
+
+public class Test {
+	
+	public Test() {
+		Thread t = new Thread() {
+			public void run() {
+				try {
+					while (true) {
+							System.out.println("hi");
+						Thread.sleep(1000);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+	}
+	
+	public static void main(String[] args) {
+		new Test();
+	}
+
+}

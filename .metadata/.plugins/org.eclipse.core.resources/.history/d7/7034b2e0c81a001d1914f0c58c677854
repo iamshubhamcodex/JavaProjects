@@ -1,0 +1,27 @@
+package trying;
+
+import java.awt.*;
+import javax.swing.*;
+
+public class Test {
+	public static void main(String[] args) {
+		JFrame frame = new JFrame("Graphics");
+		frame.setBounds(50, 50, 958, 674);
+
+		@SuppressWarnings("serial")
+		JPanel pn = new JPanel() {
+			@Override
+			public void paint(Graphics g) {
+				g.drawOval(40, 40, 120, 150);
+				g.drawOval(57, 75, 30, 20);
+				g.drawOval(110, 75, 30, 20);
+				g.fillOval(68, 81, 10, 10);
+				g.fillOval(121, 81, 10, 10);
+				g.drawOval(105, 100, 20, 40);
+			}
+		};
+		frame.getContentPane().add(pn);
+		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+}

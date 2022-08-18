@@ -1,0 +1,38 @@
+package trying;
+
+import java.awt.*;
+import javax.swing.*;
+
+public class Test {
+	public static void main(String[] args) {
+		JFrame frame = new JFrame("Graphics");
+		frame.setBounds(1250, 100, 528, 551);
+
+		@SuppressWarnings("serial")
+		JPanel pn = new JPanel() {
+			@Override
+			public void paint(Graphics g) {
+				g.setFont(new Font("Courier New", Font.BOLD, 20));
+				g.setColor(Color.blue);
+				g.drawString("Illustration of methods of Graphics class", 200, 520);
+				boolean white = true;
+				for (int x = 0; x < 8; x++) {
+					for (int y = 0; y < 8; y++) {
+						if (white) {
+							g.setColor(new Color(235, 235, 208));
+						} else {
+							g.setColor(new Color(119, 148, 85));
+						}
+						g.fillRect(x * wid, y * wid, wid, wid);
+						white = !white;
+					}
+					white = !white;
+				}
+
+			}
+		};
+		frame.getContentPane().add(pn);
+		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+}

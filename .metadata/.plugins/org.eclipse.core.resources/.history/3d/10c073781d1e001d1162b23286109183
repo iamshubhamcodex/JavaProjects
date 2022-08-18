@@ -1,0 +1,15 @@
+package com.gravity;
+
+import java.util.Date;
+
+public class Test {
+	
+	public Test() {
+		
+	}
+	
+	public static void main(String[] args) {
+		new Test();
+	}
+
+}

@@ -1,0 +1,152 @@
+package snakeGame;
+
+import java.awt.Rectangle;
+import java.util.LinkedList;
+
+import testGame.Game;
+
+import static snakeGame.Game.*;
+
+public class Snake {
+	LinkedList<Rectangle> body = new LinkedList<>();
+	private String dir = "NULL";
+	private String move = "NOTHING";
+	private boolean end = false;
+	public int score = 0;
+
+	public Snake() {
+		body.add(new Rectangle(20 * dim, 15 * dim, dim, dim));
+		body.add(new Rectangle(19 * dim, 15 * dim, dim, dim));
+		body.add(new Rectangle(18 * dim, 15 * dim, dim, dim));
+	}
+
+	public LinkedList<Rectangle> getBody() {
+		return body;
+	}
+
+	public boolean getEnd() {
+		return end;
+	}
+//
+//	public void move(int i) {
+//		if (!end) {
+//			int x = body.get(0).x;
+//			int y = body.get(0).y;
+//
+//			switch (i) {
+//			case 1: // up
+//				if (dir != "Down") {
+//					dir = "Up";
+//					if (checkCollision(x, y - 20)) {
+//						body.add(0, new Rectangle(x, y - 20, dim, dim));
+//						score++;
+//					} else {
+//						body.add(0, new Rectangle(x, y - 20, dim, dim));
+//						body.removeLast();
+//					}
+//				}
+//				break;
+//			case 2: // down
+//				if (dir != "Up") {
+//					dir = "Down";
+//					if (checkCollision(x, y + 20)) {
+//						body.add(0, new Rectangle(x, y + 20, dim, dim));
+//						score++;
+//					} else {
+//						body.add(0, new Rectangle(x, y + 20, dim, dim));
+//						body.removeLast();
+//					}
+//				}
+//				break;
+//			case 3: // right
+//				if (dir != "Left") {
+//					dir = "Right";
+//					if (checkCollision(x + 20, y)) {
+//						body.add(0, new Rectangle(x + 20, y, dim, dim));
+//						score++;
+//					} else {
+//						body.add(0, new Rectangle(x + 20, y, dim, dim));
+//						body.removeLast();
+//					}
+//				}
+//				break;
+//			case 4: // left
+//				if (dir != "Right" && dir != "NULL") {
+//					dir = "Left";
+//					if (checkCollision(x - 20, y)) {
+//						body.add(0, new Rectangle(x - 20, y, dim, dim));
+//						score++;
+//					} else {
+//						body.add(0, new Rectangle(x - 20, y, dim, dim));
+//						body.removeLast();
+//					}
+//				}
+//			}
+//		}
+//	}
+
+	public void move1() {
+		if (move != "NOTHING") {
+			Rectangle first = body.get(0);
+			Rectangle temp = new Rectangle(Game.dimension, Game.dimension);
+
+			if (move == "UP") {
+				temp.setLocation(first.x, first.y - Game.dimension);
+			} else if (move == "DOWN") {
+				temp.setLocation(first.x, first.y + Game.dimension);
+			} else if (move == "LEFT") {
+				temp.setLocation(first.x - Game.dimension, first.y);
+			} else {
+				temp.setLocation(first.x + Game.dimension, first.y);
+			}
+			body.add(0, temp);
+			body.remove(body.size() - 1);
+		}
+	}
+
+	public void grow() {
+		Rectangle first = body.get(0);
+		Rectangle temp = new Rectangle(Game.dimension, Game.dimension);
+
+		if (move == "UP") {
+			temp.setLocation(first.x, first.y - Game.dimension);
+		} else if (move == "DOWN") {
+			temp.setLocation(first.x, first.y + Game.dimension);
+		} else if (move == "LEFT") {
+			temp.setLocation(first.x - Game.dimension, first.y);
+		} else {
+			temp.setLocation(first.x + Game.dimension, first.y);
+		}
+		body.add(0, temp);
+	}
+	public boolean checkCollision(int x, int y) {
+		return checkFoodCollision(x, y) || checkSelfCollision(x, y) || checkWallCollision(x, y);
+	}
+
+	public boolean checkWallCollision(int x, int y) {
+		if (x >= 0 && x <= wid - 20 && y >= 0 && y <= hei - 20) {
+			return false;
+		} else {
+			end = true;
+			return false;
+		}
+	}
+
+	public boolean checkSelfCollision(int x, int y) {
+		for (Rectangle r : body) {
+			if (r.x == x && r.y == y) {
+				end = true;
+			}
+		}
+		return false;
+	}
+
+	public boolean checkFoodCollision(int x, int y) {
+		if (food.x == x / 20 && food.y == y / 20) {
+			food.getFood(body);
+			return true;
+		}
+		return false;
+
+	}
+}

@@ -1,0 +1,38 @@
+package snakeGame;
+
+import java.awt.Rectangle;
+import java.util.LinkedList;
+
+import static snakeGame.Game.*;
+
+public class Food {
+	static Rectangle f;
+	int x, y;
+
+	public Food() {
+		f = new Rectangle(0, 0, dim, dim);
+	}
+
+	public void getFood(LinkedList<Rectangle> body) {
+		randomFood(body);
+		x = f.x / dim;
+		y = f.y / dim;
+	}
+
+	public void randomFood(LinkedList<Rectangle> body) {
+		int x = (int) (Math.random() * wid) / 20;
+		int y = (int) (Math.random() * hei) / 20;
+
+		for (Rectangle r : body) {
+			if (r.x == x || r.y == y) {
+				randomFood(body);
+			}
+		}
+		if (!(x >= 0 && x < 740 && y >= 0 && y < 740)) {
+			randomFood(body);
+		}
+		System.out.println(x + " " + y);
+		f.x = x * dim;
+		f.y = y * dim;
+	}
+}

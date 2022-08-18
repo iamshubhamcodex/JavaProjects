@@ -1,0 +1,35 @@
+package snakeGame;
+
+import java.awt.Dimension;
+import java.awt.Rectangle;
+import static snakeGame.Game.*;
+
+public class Food {
+	static Rectangle f;
+	int x, y;
+
+	public Food() {
+		f = new Rectangle(0, 0, dim, dim);
+	}
+
+	public void getFood() {
+		randomFood();
+		x = f.x / dim;
+		y = f.y / dim;
+		System.out.println(x + " " + y);
+		return new Dimension(x, y);
+	}
+
+	public void randomFood() {
+		int x = (int) (Math.random() * wid) / 20;
+		int y = (int) (Math.random() * hei) / 20;
+
+		for (Rectangle r : Snake.getBody()) {
+			if (r.x == x || r.y == y) {
+				randomFood();
+			}
+		}
+		f.x = x * dim;
+		f.y = y * dim;
+	}
+}

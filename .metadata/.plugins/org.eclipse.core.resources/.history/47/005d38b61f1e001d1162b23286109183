@@ -1,0 +1,53 @@
+package com.gravity;
+
+import java.util.Date;
+
+public class Gravity{
+	static float g = 9.8f; // m/s2
+	static final float a = g;
+	static float t = 0.10f; // s
+	static float v = a * t; // m/s
+	static float s = (0 * t) + ((1 / 2) * (a * t * t)); // m
+	
+	long sTime;
+	Date d;
+
+	public static void main(String[] args) {
+		new Gravity();
+	}
+	public Gravity() {
+		d = new Date();
+		sTime = d.getTime();
+		startThread();
+	}
+	public float getTime() {
+		Date dn = new Date();
+		return (dn.getTime() - sTime) / 1000.0f;
+	}
+	public float getVel() {
+		return a * getTime();
+	}
+	public float getDist() {
+		float f = getTime();
+		return ((1 / 2) * (a * f * f));
+	}
+	public void refreshTime() {
+		sTime = d.getTime();
+	}
+	
+	public void startThread() {
+		Thread t = new Thread() {
+			public void run() {
+				try {
+					while (true) {
+						System.out.println(getDist() + " meters in " + (int)getTime() + " seconds");
+						Thread.sleep(1000);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		t.start();		
+	}
+}

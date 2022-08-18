@@ -1,0 +1,166 @@
+package com.gravity;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.ArrayList;
+
+@SuppressWarnings("serial")
+public class Graphic extends JFrame {
+	JPanel pn;
+	float yD = 10;
+	boolean play = true;
+	ArrayList<int[]> poles = new ArrayList<>(); // random xposition
+	int initWid = 250;
+	int score = 0;
+	int call = 0;
+	JButton btn;
+
+	int ballx = 51;
+	int ballw = 25;
+
+	int polew = 50;
+
+	public Graphic() {
+		this.setTitle("Gravity");
+		setBounds(1120, 10, 800, 1000);
+
+		setGUI();
+		new Gravity();
+		startThread();
+		startPole();
+
+		addKeyListener(new KeyListener() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (KeyEvent.getKeyText(e.getKeyCode()) == "Up") {
+					yD -= 3;
+					Gravity.vi = -5;
+					Gravity.refreshTime();
+				}
+			}
+		});
+		setVisible(true);
+		setDefaultCloseOperation(3);
+	}
+
+	public static void main(String[] args) {
+		new Graphic();
+	}
+
+	public void setGUI() {
+		pn = new JPanel() {
+			@Override
+			public void paint(Graphics g) {
+				g.setColor(Color.black);
+				g.fillRect(0, 0, this.getWidth(), this.getHeight());
+				if (play) {
+					g.setColor(Color.white);
+					g.drawOval(ballx, (int) yD, ballw, ballw);
+
+					for (int[] li : poles) {
+						g.setColor(Color.green);
+						g.fillRect(li[1], 0, polew, li[0]);
+						g.fillRect(li[1], li[0] + 150, polew, pn.getHeight());
+					}
+
+					g.setColor(Color.white);
+					g.setFont(new Font("Arial", Font.ITALIC, 20));
+					g.drawString("Score: " + score, pn.getWidth() - 100, 20);
+
+				} else {
+					g.setColor(Color.white);
+					g.setFont(new Font("", Font.BOLD, 35));
+					g.drawString("Game Over", pn.getWidth() / 2 - 100, pn.getHeight() / 2 - 200);
+					g.drawString("You Scored " + score + " points", pn.getWidth() / 2 - 160, pn.getHeight() / 2 - 160);
+
+					g.setColor(Color.white);
+					btn = new JButton("Wanna Play Again");
+					btn.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							System.out.println("Yes");
+
+						}
+					});
+				}
+			}
+		};
+
+		this.add(pn);
+	}
+
+	public void setYD(float yD) {
+		this.yD = yD;
+	}
+
+	public void startThread() {
+		Thread t = new Thread() {
+			public void run() {
+				try {
+					while (play) {
+						if ((yD > pn.getHeight() && yD >= 50) || yD < 0) 
+							play = false;
+						
+						setYD(yD += Gravity.getDist());
+						boolean toRemove = false;
+						for (int[] li : poles) {
+							if ((li[1] <= ballx + ballw) && (yD <= li[0] || yD + 25 >= li[0] + 150)) // 51(x) +
+																										// 25(width) 76
+								play = false;
+							li[1] -= 2;
+							if (li[1] < 0) {
+								toRemove = true;
+								score++;
+							}
+						}
+						if (toRemove)
+							poles.remove(0);
+						pn.repaint();
+						Thread.sleep(33);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		t.start();
+	}
+
+	public void startPole() {
+		Thread t = new Thread() {
+			public void run() {
+				try {
+					while (play) {
+						int rand = 200 + (int) (Math.random() * 500);
+						int i[] = { rand, initWid };
+						poles.add(i);
+						initWid += 150;
+
+						Thread.sleep(2000);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		t.start();
+	}
+
+}

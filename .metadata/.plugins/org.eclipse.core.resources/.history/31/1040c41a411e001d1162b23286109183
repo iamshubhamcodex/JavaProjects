@@ -1,0 +1,29 @@
+package flappyBird;
+
+import java.util.ArrayList;
+
+public class Pole {
+	int polew = 50;
+	int poleg = 120;
+	static ArrayList<int[]> poles = new ArrayList<>(); // random xposition
+
+	public static void startPole() {
+		Thread t = new Thread() {
+			public void run() {
+				try {
+					while (play) {
+						int rand = 200 + (int) (Math.random() * 500);
+						int i[] = { rand, initWid };
+						poles.add(i);
+						initWid += 150;
+
+						Thread.sleep(2000);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		t.start();
+	}
+}

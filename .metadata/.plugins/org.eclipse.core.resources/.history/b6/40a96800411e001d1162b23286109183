@@ -1,0 +1,24 @@
+package flappyBird;
+
+public class Pole {
+
+	public static void startPole() {
+		Thread t = new Thread() {
+			public void run() {
+				try {
+					while (play) {
+						int rand = 200 + (int) (Math.random() * 500);
+						int i[] = { rand, initWid };
+						poles.add(i);
+						initWid += 150;
+
+						Thread.sleep(2000);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		t.start();
+	}
+}

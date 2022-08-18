@@ -1,0 +1,255 @@
+package chess;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.LinkedList;
+import javax.imageio.ImageIO;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import java.awt.Toolkit;
+
+public class ChessBuilder extends JFrame {
+	public ChessBuilder() {
+		setTitle("Chess");
+		setIconImage(Toolkit.getDefaultToolkit().getImage("D:\\Coding\\Java\\Programme\\Chess\\chess.png"));
+	}
+
+	private static final long serialVersionUID = 1L;
+	static LinkedList<Piece> ps = new LinkedList<>();
+	static Image imgs[] = new Image[12];
+	static Piece sp = null;
+	static int[][] mat = new int[8][8];
+	static int wid = 64;
+	static JFrame frame;
+	static boolean turn = true; // true for white;
+	static BufferedImage all = null;
+
+	public static void main(String[] args) {
+		try {
+			all = ImageIO.read(new File("D:\\Coding\\Java\\Programme\\Chess\\chess.png"));
+		} catch (Exception e) {
+		}
+
+		int ind = 0;
+		for (int y = 0; y < 400; y += 200) {
+			for (int x = 0; x < 1200; x += 200) {
+				imgs[ind] = all.getSubimage(x, y, 200, 200);
+				ind++;
+			}
+		}
+
+		new Piece(0, 0, false, "rook", ps, mat, 4);
+		new Piece(1, 0, false, "knight", ps, mat, 3);
+		new Piece(2, 0, false, "bishop", ps, mat, 2);
+		new Piece(3, 0, false, "king", ps, mat, 0);
+		new Piece(4, 0, false, "queen", ps, mat, 1);
+		new Piece(5, 0, false, "bishop", ps, mat, 2);
+		new Piece(6, 0, false, "knight", ps, mat, 3);
+		new Piece(7, 0, false, "rook", ps, mat, 4);
+		new Piece(1, 1, false, "pawn", ps, mat, 5);
+		new Piece(2, 1, false, "pawn", ps, mat, 5);
+		new Piece(3, 1, false, "pawn", ps, mat, 5);
+		new Piece(4, 1, false, "pawn", ps, mat, 5);
+		new Piece(5, 1, false, "pawn", ps, mat, 5);
+		new Piece(6, 1, false, "pawn", ps, mat, 5);
+		new Piece(7, 1, false, "pawn", ps, mat, 5);
+		new Piece(0, 1, false, "pawn", ps, mat, 5);
+
+		new Piece(0, 7, true, "rook", ps, mat, 4);
+		new Piece(1, 7, true, "knight", ps, mat, 3);
+		new Piece(2, 7, true, "bishop", ps, mat, 2);
+		new Piece(3, 7, true, "king", ps, mat, 0);
+		new Piece(4, 7, true, "queen", ps, mat, 1);
+		new Piece(5, 7, true, "bishop", ps, mat, 2);
+		new Piece(6, 7, true, "knight", ps, mat, 3);
+		new Piece(7, 7, true, "rook", ps, mat, 4);
+		new Piece(1, 6, true, "pawn", ps, mat, 5);
+		new Piece(2, 6, true, "pawn", ps, mat, 5);
+		new Piece(3, 6, true, "pawn", ps, mat, 5);
+		new Piece(4, 6, true, "pawn", ps, mat, 5);
+		new Piece(5, 6, true, "pawn", ps, mat, 5);
+		new Piece(6, 6, true, "pawn", ps, mat, 5);
+		new Piece(7, 6, true, "pawn", ps, mat, 5);
+		new Piece(0, 6, true, "pawn", ps, mat, 5);
+
+		frame = new JFrame("Chess - Play with Friends");
+		frame.setBounds(1250, 100, 528, 551);
+		frame.setIconImage(Toolkit.getDefaultToolkit().getImage("D:\\Coding\\Java\\Programme\\Chess\\chess.png"));
+
+		JPanel pn = new JPanel() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void paint(Graphics g) {
+				boolean white = true;
+				for (int x = 0; x < 8; x++) {
+					for (int y = 0; y < 8; y++) {
+						if (white) {
+							g.setColor(new Color(235, 235, 208));
+						} else {
+							g.setColor(new Color(119, 148, 85));
+						}
+						g.fillRect(x * wid, y * wid, wid, wid);
+						white = !white;
+					}
+					white = !white;
+				}
+
+				for (Piece p : ps) {
+					int ind = p.ind;
+					if (!p.isWhite)
+						ind += 6;
+					g.drawImage(imgs[ind].getScaledInstance(wid, wid, BufferedImage.SCALE_SMOOTH), p.x, p.y, this);
+				}
+
+				for (int x = 0; x < mat.length; x++) {
+					for (int y = 0; y < mat[0].length; y++) {
+						if (mat[x][y] == 3) {
+							g.setColor(new Color(255, 249, 194));
+							int let = wid / 3;
+							g.fillOval((x * wid) + (wid / 2) - (let / 2), (y * wid) + (wid / 2) - (let / 2), let, let);
+						} else if (mat[x][y] == 1) {
+							g.setColor(new Color(0, 0, 0));
+							g.drawRoundRect(x * wid, y * wid, wid, wid, wid / 3, wid / 3);
+						}
+					}
+				}
+				refreshMat();
+
+			}
+
+		};
+		frame.getContentPane().add(pn);
+		frame.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				setPiece();
+				Piece gp = getPiece(e.getX() - 8, e.getY() - 32);
+				try {
+					if (gp != null) {
+						sp = gp;
+						mat = sp.isWhite == turn ? sp.safeOption() : refreshMat();
+//					} else if (sp != null) {
+//						sp = null;
+					} else if (sp != null) {
+						if (sp.isWhite == turn) {
+							if (sp.safeOption()[(e.getX() - 8) / wid][(e.getY() - 32) / wid] == 3) {
+								sp.move((e.getX() - 8) / wid, (e.getY() - 32) / wid, sp.isWhite);
+								Check.check(sp.isWhite);
+								Check.check(!sp.isWhite);
+								turn = !turn;
+								mat = refreshMat();
+							} else {
+								sp = null;
+								refreshMat();
+							}
+						}
+					}
+
+//					if (sp != null) {
+//						if (sp.isWhite == turn) {
+//							mat = sp.safeOption();
+//							printM(mat);
+//							if (mat[(e.getX() - 8) / wid][(e.getY() - 32) / wid] == 3) {
+//								sp.move((e.getX() - 8) / wid, (e.getY() - 32) / wid, sp.isWhite);
+//								Check.check(sp.isWhite);
+//								Check.check(!sp.isWhite);
+//								turn = !turn;
+//								mat = refreshMat();
+//							} else if (gp != null) {
+//								sp = gp;
+//								refreshMat();
+//								mat = sp.safeOption();
+//							} else if (gp == null) {
+//								mat = refreshMat();
+//							}
+//						}
+//						sp = null;
+//					} else {
+//						sp = gp;
+//						if (gp != null && sp.isWhite == turn)
+//							mat = sp.safeOption();
+//					}
+					setPiece();
+					frame.repaint();
+				} catch (Exception e1) {
+//					System.out.println(e1.getMessage());
+					e1.printStackTrace();
+				}
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+		frame.addComponentListener(new ComponentAdapter() {
+			public void componentResized(ComponentEvent cE) {
+				setWid();
+				frame.repaint();
+			}
+		});
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+	}
+
+	public static void printM(int[][] mat) {
+		for (int y = 0; y < mat.length; y++) {
+			for (int x = 0; x < mat[0].length; x++)
+				System.out.print(mat[x][y] + " ");
+			System.out.println();
+		}
+		System.out.println("\n\n\n");
+	}
+
+	public static Piece getPiece(int x, int y) {
+		for (Piece p : ps)
+			if (p.xp == x / wid & p.yp == y / wid)
+				return p;
+		return null;
+	}
+
+	public static void setPiece() {
+		for (Piece p : ps) {
+			p.x = p.xp * wid;
+			p.y = p.yp * wid;
+		}
+	}
+
+	public static int setWid() {
+		wid = ((Math.min((int) frame.getSize().getHeight() - 20, (int) frame.getSize().getWidth()) - 15) / 8);
+		setPiece();
+		return wid;
+	}
+
+	public static int[][] refreshMat() {
+		mat = new int[8][8];
+		for (Piece p : ps) {
+			mat[p.xp][p.yp] = p.isWhite ? 4 : 5;
+		}
+		return mat;
+	}
+}

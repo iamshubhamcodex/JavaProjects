@@ -1,0 +1,48 @@
+package trying;
+
+import java.awt.*;
+import javax.swing.*;
+
+public class Test {
+	public static void main(String[] args) {
+		JFrame frame = new JFrame("Graphics");
+		frame.setBounds(50, 50, 858, 674);
+
+		@SuppressWarnings("serial")
+		JPanel pn = new JPanel() {
+			@Override
+			public void paint(Graphics g) {
+				g.setFont(new Font("Courier New", Font.BOLD, 20));
+				g.setColor(Color.blue);
+				g.drawString("Illustration of methods of Graphics class", 200, 520);
+				Font f = g.getFont();
+				String s = f.toString();
+				g.drawString(s, 5, 560);
+				
+				g.fillRect(500, 15, 70, 90);
+				g.drawRect(160, 5, 60, 60);
+				g.drawOval(10, 120, 155, 95);
+				g.setColor(Color.yellow);
+				g.fillOval(700, 140, 50, 150);
+				g.setColor(Color.black);
+				g.drawLine(380, 100, 200, 180);
+				g.drawArc(400, 150, 180, 280, 90, 70);
+				int x2[] = {200, 120, 280, 240};
+				int z2 = 4, y2[] = {260, 370, 370, 270};
+				g.setColor(Color.blue);
+				g.fillPolygon(x2, y2, z2);
+				g.setColor(Color.red);
+				g.drawRect(15, 15, 30, 50);
+				FontMetrics f2 = g.getFontMetrics();
+				String s2 = f2.toString();
+				g.drawString(s2, 5, 580);
+				g.setColor(Color.magenta);
+				g.fillRoundRect(510, 400, 90, 90, 10, 10);
+
+			}
+		};
+		frame.getContentPane().add(pn);
+		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+}
